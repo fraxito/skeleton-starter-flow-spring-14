@@ -12,6 +12,9 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.PWA;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 /**
  * A sample Vaadin view class.
  * <p>
@@ -42,14 +45,22 @@ public class MainView extends VerticalLayout {
      */
     public MainView(@Autowired GreetService service) {
         HorizontalLayout inputs = new HorizontalLayout();
-
+        VerticalLayout results = new VerticalLayout();
         TextField requestType = new TextField("Request type");
         requestType.addThemeName("bordered");
         TextField requestId = new TextField("Request id");
         requestId.addThemeName("bordered");
         inputs.add(requestType, requestId);
-        Button boton1 = new Button("Say hello",
-                e -> Notification.show(service.greet(requestType.getValue())));
+        Button boton1 = new Button("Lee caracter",
+                e -> {
+                    API api = new API();
+                    String tipo = requestType.getValue();
+                    int id = Integer.parseInt(requestId.getValue());
+                    try {
+                        System.out.println(api.getCharacter(tipo,id));
+                    } catch (Exception ex) {
+                    }
+                });
         boton1.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         boton1.addClickShortcut(Key.ENTER);
         // Use custom CSS classes to apply styling. This is defined in shared-styles.css.
