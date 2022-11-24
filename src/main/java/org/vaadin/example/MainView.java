@@ -3,6 +3,7 @@ package org.vaadin.example;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -46,18 +47,20 @@ public class MainView extends VerticalLayout {
     public MainView(@Autowired GreetService service) {
         HorizontalLayout inputs = new HorizontalLayout();
         VerticalLayout results = new VerticalLayout();
-        TextField requestType = new TextField("Request type");
-        requestType.addThemeName("bordered");
+        ComboBox<String> comboBox = new ComboBox<>("Browser");
+        comboBox.setAllowCustomValue(false); //este deja que el usuario escriba lo que quiera en la caja del comboBox. Si se pone a false no deja
+        comboBox.setItems("people", "planets", "starships");
+        comboBox.setHelperText("Selecciona el tipo de petición");
+
         TextField requestId = new TextField("Request id");
         requestId.addThemeName("bordered");
-        inputs.add(requestType, requestId);
+        inputs.add(comboBox, requestId);
         Button boton1 = new Button("Lee caracter",
                 e -> {
-                    API api = new API();
-                    String tipo = requestType.getValue();
+                    String tipo = comboBox.getValue();
                     int id = Integer.parseInt(requestId.getValue());
                     try {
-                        System.out.println(api.getCharacter(tipo,id));
+                        System.out.println(service.getSWAPI(tipo,id));
                     } catch (Exception ex) {
                     }
                 });
