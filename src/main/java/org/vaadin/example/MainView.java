@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -52,6 +53,13 @@ public class MainView extends VerticalLayout {
         comboBox.setItems("people", "planets", "starships");
         comboBox.setHelperText("Selecciona el tipo de petición");
 
+        Grid<Character> grid = new Grid<>(Character.class, true);
+        grid.addColumn(Character::getName).setHeader("Nombre");
+        grid.addColumn(Character::getHeight).setHeader("Altura");
+        grid.addColumn(Character::getMass).setHeader("Peso");
+        grid.addColumn(Character::getHair_color).setHeader("Color de pelo");
+        grid.addColumn(Character::getEye_color).setHeader("Color de ojo");
+
         TextField requestId = new TextField("Request id");
         requestId.addThemeName("bordered");
         inputs.add(comboBox, requestId);
@@ -60,7 +68,18 @@ public class MainView extends VerticalLayout {
                     String tipo = comboBox.getValue();
                     int id = Integer.parseInt(requestId.getValue());
                     try {
-                        System.out.println(service.getSWAPI(tipo,id));
+                        results.removeAll();
+                        results.add(service.getSWAPI(tipo,id));
+                    } catch (Exception ex) {
+                    }
+                });
+        Button boton2 = new Button("Lee lista caracteres",
+                e -> {
+                    String tipo = comboBox.getValue();
+
+                    try {
+                        grid.setItems(service.getCharList(tipo));
+                        results.add(grid);
                     } catch (Exception ex) {
                     }
                 });
@@ -69,7 +88,7 @@ public class MainView extends VerticalLayout {
         // Use custom CSS classes to apply styling. This is defined in shared-styles.css.
         addClassName("centered-content");
 
-        add(inputs, boton1);
+        add(inputs, boton1,boton2, results);
     }
 
 }
